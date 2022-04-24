@@ -20,19 +20,13 @@ var app = builder.Build();
 
 app.MapHealthChecks("/health");
 
-app.MapPost("/{paymentMethodIdentifier}/payments",
+app.MapPost("/payments",
     (HttpRequest request,
-    string paymentMethodIdentifier,
     [FromHeader(Name = "Authorization")] string? authorization,
-    [FromHeader(Name = "Cko-Merchant-Data")] string? ckoMerchantData,
-    [FromHeader(Name = "Cko-Payment-Signature")] string? ckoPaymentSignature,
     ILoggerFactory loggerFactory) =>
         new PaymentsPost(loggerFactory.CreateLogger("PaymentsPost")).Post(
             request,
-            paymentMethodIdentifier,
-            authorization,
-            ckoMerchantData,
-            ckoPaymentSignature));
+            authorization));
 
 app.Logger.LogInformation("The application started");
 

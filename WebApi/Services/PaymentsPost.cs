@@ -11,22 +11,17 @@ public class PaymentsPost
 
     public async Task<IResult> Post(
         HttpRequest request,
-        string paymentMethodIdentifier,
-        string? authorization,
-        string? ckoMerchantData,
-        string? ckoPaymentSignature)
+        string? authorization)
     {
         //Read Body with Serialization as SnakeCase
-        CreatePaymentRequest createPaymentRequest =
+        var createPaymentRequest =
             await request.ReadFromJsonAsync<CreatePaymentRequest>(options: SerializationExtensions.Options) ??
             throw new InvalidOperationException();
 
         if (createPaymentRequest is null)
             throw new ArgumentNullException(nameof(createPaymentRequest));
 
-        if (string.IsNullOrWhiteSpace(authorization) ||
-            string.IsNullOrWhiteSpace(ckoMerchantData) ||
-            string.IsNullOrWhiteSpace(ckoPaymentSignature))
+        if (string.IsNullOrWhiteSpace(authorization))
             return Results.Json(
                 statusCode: StatusCodes.Status401Unauthorized,
                 data: null,
